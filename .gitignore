@@ -1,0 +1,8 @@
+node_modules/
+__pycache__/
+*.pyc
+dist/
+storage/
+.env
+venv/
+ml-service/models/

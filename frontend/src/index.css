@@ -1,0 +1,112 @@
+/* ResQFusion design system
+   Concept: a night-shift district control room — the screens coordinators actually stare at during
+   a flood. Deep slate background so map risk-colors and alert states read instantly; a signal-amber
+   accent reserved for things that need a human's attention; a cool teal for "measured, calm" data.
+   Data labels (coordinates, timestamps, ids) use a mono face because they are literally coordinates —
+   not decoration.
+*/
+
+:root {
+  --bg: #0b1220;
+  --bg-raised: #111a2c;
+  --panel: #14203a;
+  --panel-border: #23324f;
+  --text: #e7ecf3;
+  --text-dim: #94a3bd;
+  --text-faint: #5f7099;
+
+  --accent: #ff7a45;       /* signal amber-orange: things needing attention */
+  --accent-dim: #c65a30;
+  --calm: #35d0c4;         /* teal: measured / low-risk data */
+  --calm-dim: #1f8f86;
+
+  --sev-low: #35d0c4;
+  --sev-moderate: #e8c14e;
+  --sev-high: #ff9a4d;
+  --sev-severe: #ff5470;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(53, 208, 196, 0.06), transparent 40%),
+    radial-gradient(circle at 85% 100%, rgba(255, 122, 69, 0.05), transparent 45%);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; letter-spacing: -0.01em; }
+p { margin: 0; }
+
+.mono { font-family: var(--font-mono); }
+
+a { color: var(--calm); text-decoration: none; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+.severity-Low, .sev-Low { color: var(--sev-low); }
+.severity-Moderate, .sev-Moderate { color: var(--sev-moderate); }
+.severity-High, .sev-High { color: var(--sev-high); }
+.severity-Severe, .sev-Severe { color: var(--sev-severe); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  border: 1px solid currentColor;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+}
+
+.scroll-thin { overflow-y: auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pulse-dot::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.35;
+    animation: pulse 1.8s ease-out infinite;
+  }
+}
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes pulse {
+  0% { transform: scale(0.6); opacity: 0.45; }
+  100% { transform: scale(1.9); opacity: 0; }
+}

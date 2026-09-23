@@ -1,0 +1,52 @@
+# One-command local stack: ML service + backend API + frontend, with MongoDB and PostgreSQL.
+# Usage: docker compose up --build
+# Coordinator/relief/citizen demo accounts are seeded automatically on first run (see backend/src/db/index.js).
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports: ["27017:27017"]
+    volumes: ["mongo_data:/data/db"]
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: resqfusion
+      POSTGRES_PASSWORD: resqfusion
+      POSTGRES_DB: resqfusion
+    ports: ["5432:5432"]
+    volumes: ["pg_data:/var/lib/postgresql/data"]
+
+  ml-service:
+    build: ./ml-service
+    restart: unless-stopped
+    ports: ["5001:5001"]
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on: [mongo, postgres, ml-service]
+    environment:
+      PORT: 4000
+      JWT_SECRET: change-this-in-production
+      ML_URL: http://ml-service:5001
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: resqfusion
+      DATABASE_URL: postgres://resqfusion:resqfusion@postgres:5432/resqfusion
+      # Leave OPENWEATHER_API_KEY / X_BEARER_TOKEN unset to use the built-in simulators.
+      INGEST_INTERVAL_MS: 300000
+      CORS_ORIGIN: "*"
+    ports: ["4000:4000"]
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on: [backend]
+    ports: ["8080:80"]
+
+volumes:
+  mongo_data:
+  pg_data:
